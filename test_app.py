@@ -2,5 +2,5 @@ from app import somar
 
 
 def test_somar():
-    assert somar(2, 3) == 5
-    assert somar(-1, 1) == 0
+    # Erro de propósito: 2 + 2 não é 5!
+    assert somar(2, 2) == 5
