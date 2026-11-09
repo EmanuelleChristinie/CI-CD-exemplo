@@ -29,7 +29,7 @@ jobs:
 
   # --- ETAPA 2: CD (Entrega Contínua) ---
   cd-deploy:
-    needs: ci-testes # O CD só roda se o CI passar!
+    needs: ci-testes 
     runs-on: ubuntu-latest
 
     permissions:
@@ -52,4 +52,4 @@ jobs:
         with:
           context: .
           push: true
-          tags: ghcr.io/${{ github.repository_lower }}:latest
+          tags: ghcr.io/emanuellechristinie/ci-cd-exemplo:latest
