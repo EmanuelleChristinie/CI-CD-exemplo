@@ -2,21 +2,20 @@ name: CD
 
 on:
   workflow_run:
-    workflows: ["CI Simples"] 
+    workflows: ["CI Simples"]
     types:
       - completed
     branches:
       - main
 
+permissions:
+  contents: read
+  packages: write
+
 jobs:
   build-and-push-docker:
     runs-on: ubuntu-latest
-    # Só roda o CD se o CI terminar com sucesso
     if: ${{ github.event.workflow_run.conclusion == 'success' }}
-    permissions:
-      contents: read
-      packages: write
-
     steps:
       - name: Baixar código do repositório
         uses: actions/checkout@v4
