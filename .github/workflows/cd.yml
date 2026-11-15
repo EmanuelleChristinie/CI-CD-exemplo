@@ -1,0 +1,41 @@
+name: CD
+
+on:
+  workflow_run:
+    workflows: ["CI Simples"] 
+    types:
+      - completed
+    branches:
+      - main
+
+jobs:
+  build-and-push-docker:
+    runs-on: ubuntu-latest
+    # Só roda o CD se o CI terminar com sucesso
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: Baixar código do repositório
+        uses: actions/checkout@v4
+
+      - name: Login no GitHub Container Registry (GHCR)
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Converter nome do repositório para minúsculo
+        run: echo "REPO_LOWER=${GITHUB_REPOSITORY,,}" >> $GITHUB_ENV
+
+      - name: Build e Push da imagem Docker
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: true
+          tags: |
+            ghcr.io/${{ env.REPO_LOWER }}:latest
+            ghcr.io/${{ env.REPO_LOWER }}:${{ github.sha }}
